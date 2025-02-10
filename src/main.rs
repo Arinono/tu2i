@@ -101,7 +101,7 @@ impl Influx {
 }
 
 fn main() -> Result<()> {
-    dotenvy::dotenv()?;
+    dotenvy::dotenv().ok();
 
     let every = std::env::var("EVERY_SEC").unwrap_or("300".to_string());
     let every = every.parse::<u64>().unwrap_or(300);
@@ -112,6 +112,7 @@ fn main() -> Result<()> {
     println!("Started");
 
     loop {
+        println!("Sending");
         let usage = turso.get_usage()?;
         let _ = influx.send(usage);
 
