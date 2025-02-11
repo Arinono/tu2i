@@ -41,7 +41,7 @@ docker run --name tu2i -d \
 -e TURSO_API_TOKEN="<your-platform-api-token>" \
 -e INFLUX_DB_URL="http://localhost:8086/api/v2/write?org=YOUR_ORG&bucket=YOUR_BUCKET&precision=ms" \
 -e INFLUX_DB_TOKEN="<your-token>" \
-tu2i
+tu2i # or arinono/tu2i
 ```
 
 ## Extras
