@@ -88,13 +88,18 @@ impl Influx {
         let body: InfluxPoint = usage.into();
 
         let client = reqwest::blocking::Client::new();
-        client
+        let res = client
             .post(&self.url)
             .header("Authorization", format!("Token {}", &self.token))
             .header("Content-Type", "text/plain; charset=utf-8")
             .header("Accept", "application/json")
             .body(body)
-            .send()?;
+            .send();
+
+        match res {
+            Err(_) => {}
+            Ok(_) => println!("Sent"),
+        }
 
         Ok(())
     }
@@ -113,8 +118,12 @@ fn main() -> Result<()> {
 
     loop {
         println!("Sending");
-        let usage = turso.get_usage()?;
-        let _ = influx.send(usage);
+        match turso.get_usage() {
+            Ok(usage) => {
+                let _ = influx.send(usage);
+            }
+            Err(_) => println!("Failed to get usage"),
+        };
 
         std::thread::sleep(std::time::Duration::from_secs(every));
     }
