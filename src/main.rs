@@ -1,4 +1,5 @@
-use anyhow::Result;
+use anyhow::{anyhow, Result};
+use reqwest::{blocking::Response, StatusCode};
 use serde::Deserialize;
 
 struct Turso {
@@ -97,8 +98,16 @@ impl Influx {
             .send();
 
         match res {
-            Err(_) => {}
-            Ok(_) => println!("Sent"),
+            Err(_) => {
+                println!("Failed to send");
+                return Err(anyhow!("Failed to send"));
+            }
+            Ok(ok) => {
+                if ok.status() != StatusCode::NO_CONTENT {
+                    println!("Failed to send");
+                    return Err(anyhow!("Failed to send"));
+                }
+            }
         }
 
         Ok(())
